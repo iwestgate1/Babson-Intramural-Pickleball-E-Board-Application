@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babson Intramural Pickleball - Board Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5f0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 105, 78, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00694E 0%, #008060 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-opacity='0.1'%3E%3Cpolygon fill='white' points='36,1 37,5 31,5 32,1'/%3E%3Cpolygon fill='white' points='14,4 15,8 9,8 10,4'/%3E%3Cpolygon fill='white' points='50,4 51,8 45,8 46,4'/%3E%3C/g%3E%3C/svg%3E");
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pickleball-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-content {
+            padding: 40px 30px;
+        }
+
+        .intro {
+            background: #f8fffe;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #00694E;
+            margin-bottom: 40px;
+        }
+
+        .intro h3 {
+            color: #00694E;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .intro p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            background: #00694E;
+            color: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-number {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .section h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #00694E;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 105, 78, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .checkbox-item:hover {
+            border-color: #00694E;
+            background: white;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #00694E;
+        }
+
+        .checkbox-content {
+            flex: 1;
+        }
+
+        .checkbox-title {
+            font-weight: 600;
+            color: #00694E;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .checkbox-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .submit-section {
+            background: #f8fffe;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #00694E 0%, #008060 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 105, 78, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 105, 78, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-content {
+                padding: 30px 20px;
+            }
+
+            .section-header {
+                padding: 15px 20px;
+            }
+
+            .checkbox-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="pickleball-icon">🏓</div>
+            <h1>Babson Intramural Pickleball</h1>
+            <p>Board Position Application</p>
+        </div>
+
+        <div class="form-content">
+            <div class="intro">
+                <h3>Join Our Leadership Team!</h3>
+                <p>Thank you for your interest in serving on the Babson Intramural Pickleball board. We're looking for passionate, dedicated students to help grow our community and create amazing experiences for all members. Please take a few minutes to complete this application.</p>
+            </div>
+
+            <form id="applicationForm" action="https://formspree.io/f/xyzdjloy" method="POST">
+                <!-- Section 1: Basic Info -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-number">1</div>
+                        <h2>Basic Information</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName">Full Name <span class="required">*</span></label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Babson Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required placeholder="your.name@babson.edu">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" required placeholder="(555) 123-4567">
+                    </div>
+                </div>
+
+                <!-- Section 2: Role Preferences -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-number">2</div>
+                        <h2>Role Preferences</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Which board position(s) are you interested in? <span class="required">*</span></label>
+                        <p style="margin-bottom: 20px; color: #666; font-size: 0.95rem;">Select all positions you'd be interested in (you can choose multiple):</p>
+                        
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vp-communications" name="positions" value="VP of Communications">
+                                <div class="checkbox-content">
+                                    <div class="checkbox-title">VP of Communications</div>
+                                    <div class="checkbox-description">Manage social media, create promotional content, handle internal/external communications, and coordinate with campus media outlets.</div>
+                                </div>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vp-events" name="positions" value="VP of Events">
+                                <div class="checkbox-content">
+                                    <div class="checkbox-title">VP of Events</div>
+                                    <div class="checkbox-description">Plan tournaments, organize social events, coordinate match schedules, and manage event logistics and equipment.</div>
+                                </div>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vp-external" name="positions" value="VP of External Relations">
+                                <div class="checkbox-content">
+                                    <div class="checkbox-title">VP of External Relations</div>
+                                    <div class="checkbox-description">Build partnerships with other schools, coordinate inter-collegiate matches, manage sponsor relationships, and represent the club externally.</div>
+                                </div>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="freshman-rep" name="positions" value="Freshman Representative">
+                                <div class="checkbox-content">
+                                    <div class="checkbox-title">Freshman Representative</div>
+                                    <div class="checkbox-description">Advocate for first-year students, help new members integrate, organize freshman-focused events, and provide feedback on the freshman experience.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Fit & Motivation -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-number">3</div>
+                        <h2>Fit & Motivation</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motivation">Why are you interested in this role? <span class="required">*</span></label>
+                        <textarea id="motivation" name="motivation" required placeholder="Tell us what drives your interest in joining the board and what you hope to contribute..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="strengths">What strengths or experiences make you a good fit? <span class="required">*</span></label>
+                        <textarea id="strengths" name="strengths" required placeholder="Share relevant skills, experiences, or qualities that would help you succeed in your chosen role(s)..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeCommitment">How much time can you realistically commit each week outside of matches? <span class="required">*</span></label>
+                        <select id="timeCommitment" name="timeCommitment" required>
+                            <option value="">Select time commitment</option>
+                            <option value="1-2 hours">1-2 hours per week</option>
+                            <option value="3-4 hours">3-4 hours per week</option>
+                            <option value="5-6 hours">5-6 hours per week</option>
+                            <option value="7+ hours">7+ hours per week</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additional">Is there anything else we should know about you?</label>
+                        <textarea id="additional" name="additional" placeholder="Optional: Share anything else you'd like us to know - special projects, unique perspectives, fun facts, etc."></textarea>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                    <div class="footer-note">
+                        <p><strong>Thank you for your interest!</strong></p>
+                        <p>We'll review all applications and reach out to candidates for interviews within one week.</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            // Check if at least one position is selected
+            const positions = document.querySelectorAll('input[name="positions"]:checked');
+            if (positions.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one board position you\'re interested in.');
+                return;
+            }
+            
+            // Create a hidden input for selected positions
+            const existingPositionInput = document.querySelector('input[name="selected_positions"]');
+            if (existingPositionInput) {
+                existingPositionInput.remove();
+            }
+            
+            const selectedPositions = Array.from(positions).map(cb => cb.value);
+            const positionInput = document.createElement('input');
+            positionInput.type = 'hidden';
+            positionInput.name = 'selected_positions';
+            positionInput.value = selectedPositions.join(', ');
+            this.appendChild(positionInput);
+            
+            // Add Formspree-required fields
+            const emailField = document.createElement('input');
+            emailField.type = 'hidden';
+            emailField.name = '_replyto';
+            emailField.value = document.getElementById('email').value;
+            this.appendChild(emailField);
+            
+            const subjectField = document.createElement('input');
+            subjectField.type = 'hidden';
+            subjectField.name = '_subject';
+            subjectField.value = 'Babson Pickleball Board Application - ' + document.getElementById('fullName').value;
+            this.appendChild(subjectField);
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            // Form will submit normally to Formspree
+        });
+
+        // Add smooth animations for checkbox interactions
+        document.querySelectorAll('.checkbox-item').forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    checkbox.checked = !checkbox.checked;
+                }
+                
+                if (checkbox.checked) {
+                    item.style.borderColor = '#00694E';
+                    item.style.background = 'white';
+                    item.style.transform = 'scale(1.02)';
+                } else {
+                    item.style.borderColor = '#e0e0e0';
+                    item.style.background = '#fafafa';
+                    item.style.transform = 'scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
